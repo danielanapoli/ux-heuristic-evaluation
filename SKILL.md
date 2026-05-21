@@ -1,4 +1,3 @@
-
 ---
 name: ux-heuristic-eval
 description: Conduct a comprehensive, defensible, expert-led usability heuristic evaluation of a website
@@ -9,47 +8,50 @@ disable-model-invocation: true
 
 ## Instructions
 
-When user asks to run a heuristic evaluation of a specific website, follow the process outlined in this document. When running the evaluation, adhere strictly to the methodology and defensibility rules. Always verify freshness on follow-up passes and when fetched content matches a prior session's fetch byte-for-byte. If the requester directly contradicts a finding, treat their observation as correct by default and investigate the source of your fetched view.
+When user asks to run a heuristic evaluation, follow this document strictly. If the requester directly contradicts a finding, treat their observation as correct by default and investigate the source of your fetched view.
 
 ## Methodology Overview (read all documentation before starting)
 
-1. Walk through the product/artifact methodically as a user would, noting any issues or friction points. Refer to [workflow.md](./references/workflow.md) for a detailed phase-by-phase process.
+1. Walk through the product methodically as a user would. Refer to [workflow.md](./references/workflow.md) for the phase-by-phase process.
 2. Identify issues grounded in two foundational frameworks. Refer to [frameworks.md](./references/frameworks.md).
-3. Reasoning about each issue through the lens of a simulated panel of named UX experts. Refer to [expert-lenses.md](./references/expert-lenses.md).
-4. Scoring each issue with two distinct severity systems. Refer to [severity-systems.md](./references/severity-systems.md).
-5. Produce a structured, auditable report as defined in [report-guidelines.md](./references/report-guidelines.md) that explicitly flags its own limits.
+3. Reason about each issue through a simulated panel of named UX experts. Refer to [expert-lenses.md](./references/expert-lenses.md).
+4. Score each issue with two severity systems. Refer to [severity-systems.md](./references/severity-systems.md).
+5. Produce a structured, auditable report as defined in [report-guidelines.md](./references/report-guidelines.md).
 
-You are **not** a substitute for real user testing or live expert review. Say so in the methodology note. Never claim user research findings you don't have.
- 
+You are **not** a substitute for real user testing or live expert review. Say so in the methodology note.
+
 ---
- 
-## Required Inputs (ask before starting if missing, do not make assumptions)
- 
-Before running the evaluation, confirm:
- 
-- **Artifact under review** — URL, prototype link, screenshots, video, or written description. If access is limited, list every assumption you're making.
-- **Primary user(s)** — who are they, what do they know, what's their context of use?
-- **Top tasks / user journeys** — what are users trying to accomplish?
-- **Scope** — which screens, flows, or features are in vs. out of scope?
-- **Business context** — what does the product do, what's the goal, what stage is it at (concept, MVP, mature)?
-- **Product category** — transactional, informational, portfolio, safety-critical, etc. This calibrates the RPN bands defined in [severity-systems.md](./references/severity-systems.md).
-- **Prior research, if any** — surveys, interviews, analytics, support tickets. Use these to inform but not replace your evaluation.
-- **Is this a follow-up pass?** If yes, confirm what changed since the prior evaluation and when the changes deployed. This triggers the [Follow-up / Delta Pass Protocol](./references/follow-up-protocol.md).
+
+## Required Inputs
+
+⛔ **Do not begin Phase 1 until blocking inputs are confirmed. Inferring silently is not a substitute for asking.**
+
+**Blocking — must confirm before starting:**
+- **Artifact under review** — URL, prototype, screenshots, or description. List every assumption if access is limited.
+- **Primary user(s)** — who they are, what they know, context of use.
+- **Top tasks / user journeys** — what users are trying to accomplish.
+
+**Non-blocking — confirm if possible; document gap if not:**
+- **Scope** — which screens, flows, or features are in vs. out.
+- **Business context** — what the product does, its goal, its stage (concept, MVP, mature).
+- **Product category** — transactional, informational, portfolio, safety-critical, etc. Calibrates RPN bands per [severity-systems.md](./references/severity-systems.md).
+- **Prior research** — surveys, interviews, analytics, support tickets. Informs but does not replace evaluation.
+- **Is this a follow-up pass?** If yes, confirm what changed and when. Triggers [Follow-up / Delta Pass Protocol](./references/follow-up-protocol.md).
 - **Output format** — Markdown (default), Word doc, PDF, slide deck.
 
-If any of these are missing, ask before proceeding. Do not invent context.
- 
-### Fallback when inputs are unavailable
- 
-If the requester cannot supply some inputs, do **not** invent them and do **not** stall. Proceed as follows:
- 
-1. **Document the gap explicitly** in the methodology note.
-2. **Infer carefully** from the artifact itself; surface every inference as an assumption.
-3. **Calibrate confidence downward** for any issue whose severity rests on the missing input.
-4. **List the inputs that would sharpen the evaluation** at the top of the report.
+### Fallback when non-blocking inputs are unavailable
+
+If the requester is genuinely unable to supply non-blocking inputs after being asked:
+
+1. Document the gap explicitly in the methodology note.
+2. Infer carefully from the artifact; surface every inference as an assumption.
+3. Calibrate confidence downward for any issue whose severity rests on the missing input.
+4. List the inputs that would sharpen the evaluation at the top of the report.
+
+---
 
 ## Defensibility Rules (non-negotiable)
- 
+
 - **No fabricated citations.** Real or "expert judgment only."
 - **Simulated expert quotes are labeled as such.**
 - **Distinguish evidence from judgment** throughout.
@@ -58,30 +60,21 @@ If the requester cannot supply some inputs, do **not** invent them and do **not*
 - **Discrepancies are surfaced, not smoothed.**
 - **Scope is honest.** Not-evaluated items are listed.
 - **Verification before claim.** Rendered-behavior claims are verified.
-- **Freshness before claim.** For follow-up passes, content currency is verified before filing findings.
+- **Freshness before claim.** Content currency is verified before filing findings on follow-up passes.
 - **Calibration is disclosed.**
-- **Requester observation outranks agent fetch.** When the agent's view of the artifact (via WebFetch, static HTML, screenshot, or any intermediary) conflicts with the requester's direct observation of the live product, the requester is correct by default. The agent must investigate the source of the discrepancy (cache, parser artifact, deploy lag, environment mismatch) rather than defend the fetched view. Filing findings that contradict a direct requester observation without first ruling out a stale or wrong-source fetch is a serious defensibility failure.
+- **Requester observation outranks agent fetch.** When the agent's fetched view conflicts with the requester's direct observation, the requester is correct by default. Investigate the discrepancy (cache, parser artifact, deploy lag, environment mismatch) before filing anything.
+
+---
 
 ## Kickoff Checklist
- 
-- [ ] I have the artifact or sufficient description.
-- [ ] I know the primary user and top tasks.
-- [ ] I have agreed scope with the requester.
-- [ ] I know the product category and have calibrated RPN bands.
-- [ ] I have surfaced assumptions in writing.
-- [ ] If required inputs are missing, I have documented the gap and chosen a fallback.
-- [ ] **I have confirmed whether this is a first pass or follow-up. If follow-up, I have applied the [Follow-up / Delta Pass Protocol](./references/follow-up-protocol.md) before any scoring or filing.**
-- [ ] I have re-read the two heuristic frameworks.
-- [ ] I have the expert panel lenses fresh.
-- [ ] I have the two severity rubrics ready.
-- [ ] I will use the three-bucket structure honestly.
-- [ ] I will escalate verification for any claim depending on rendered behavior.
-- [ ] **I will verify freshness on follow-up passes and when fetched content matches a prior session's fetch byte-for-byte.**
-- [ ] I will not fabricate citations or quotes presented as real.
-- [ ] I will flag discrepancies, not hide them.
-- [ ] **If the requester directly contradicts a finding, I will treat their observation as correct by default and investigate the source of my fetched view.**
-- [ ] I will run the panel balance review as described in [workflow.md](./references/workflow.md) and record the tally in Appendix E.
-- [ ] I will run the defensibility audit as described in [workflow.md](./references/workflow.md) (Phase 9) and record the result in Appendix F.
-- [ ] I will disclose scope limits and missing inputs in the report and calibrate confidence for any issue depending on missing inputs.
-- [ ] I will disclose all assumptions and inferences clearly in the methodology note.
-- [ ] I will produce the report in the requested format.
+
+- [ ] Blocking inputs confirmed: artifact, primary user(s), top tasks.
+- [ ] Non-blocking inputs confirmed or gaps documented.
+- [ ] Assumptions surfaced in writing.
+- [ ] Product category confirmed; RPN bands calibrated, or gap documented.
+- [ ] Fetch method noted: rendered browser (preferred) or static fetch. If static, limitation flagged in Methodology Note.
+- [ ] **First pass or follow-up confirmed. If follow-up, [Follow-up / Delta Pass Protocol](./references/follow-up-protocol.md) applied before any scoring.**
+- [ ] **If follow-up: freshness fingerprint established before any fetch. Methods in order: (1) render in real browser, (2) cache-busting query param, (3) compare on-page recency signals, (4) ask requester to confirm one specific element. Do not file findings until freshness is confirmed.**
+- [ ] Panel balance review run per [workflow.md](./references/workflow.md); tally recorded in Appendix E.
+- [ ] Defensibility audit run (Phase 9); result recorded in Appendix F.
+- [ ] Report produced in requested format.
