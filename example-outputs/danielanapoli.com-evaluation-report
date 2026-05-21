@@ -1,0 +1,462 @@
+# UX Heuristic Evaluation — danielanapoli.com
+
+**Evaluator:** Simulated expert-led heuristic evaluation (automated)
+**Date:** May 20, 2026
+**Artifact:** https://www.danielanapoli.com — personal portfolio site of Daniela Napoli, UX & User Researcher
+**Pass type:** First pass (not a follow-up)
+
+---
+
+## 1. Executive Summary
+
+This is an expert-led usability heuristic evaluation of danielanapoli.com, a personal portfolio site. Pages were rendered and walked in a real browser (Claude in Chrome). Findings are grounded in Nielsen's 10 Usability Heuristics and Shneiderman's Eight Golden Rules, reasoned through a simulated panel of named UX experts, and scored on two severity systems (FMEA per Soares; Nielsen severity).
+
+**Scope.** Home, User Research (index + the Requirements Discovery detail page as a representative sample), Academic (index), Resume, Contact, and the 404 error route. Primary users confirmed by the requester: recruiters / hiring managers, prospective clients, and peers / collaborators. Top tasks: review work / portfolio, and make contact. Product category confirmed as portfolio / personal site, so RPN severity bands are calibrated downward (Critical ≥120; High 70–119; Medium 35–69; Low <35).
+
+**Headline:** This is a competent, well-built site. The information architecture is clean, the copy is clear and confident, and several accessibility fundamentals are already in place (a working skip link, `lang` attribute, visible focus rings, descriptive image alt text, `prefers-reduced-motion` support, `rel="noopener"` on external links). The issues below are refinements, not rebuilds — but a few sit directly in the path of the site's primary users.
+
+### Top themes (patterns across issues)
+
+1. **Accessibility is roughly 80% there — and the missing 20% is invisible without an audit.** Strong foundations are undercut by gaps a sighted reviewer never experiences: a thin, level-skipping heading outline, accordion toggles missing `aria-controls`, sub-minimum touch targets, and an over-long blog link. Each is individually small; together they mean the site under-serves assistive-technology users and the owner cannot see it.
+2. **Edges and error states were not finished to the standard of the happy path.** The clearest case is the 404 page, which is the unstyled framework default. The main flows are polished; the exceptional states were left behind.
+3. **The card-based component system is not fully normalized.** Card heights are uneven within a row, the footer link cluster is visually cramped, and the homepage has a large unbalanced whitespace gap — symptoms of components that work individually but were not tuned as a set.
+4. **The recruiter / client journey adds small frictions exactly at the finish line.** The site presents work well, but the two moments where a primary user wants to *act* — saving the resume, and reaching out — each carry avoidable friction (no resume download; a contact page that opens with a discouraging clause).
+
+### Top issues by RPN
+
+- **Issue #1 — Heading structure is thin and skips a level (RPN 112, High).** Assistive-technology users lose a primary way to navigate and skim pages.
+- **Issue #2 — The 404 page is an unstyled, off-brand dead end (RPN 100, High).** A broken-looking error page is a credibility risk on a UX professional's own site.
+- **Issue #3 — The resume page offers no download or save option (RPN 100, High).** Recruiters routinely need to save or forward a resume; the site forces a workaround.
+
+### Recommended next steps
+
+- **Immediate:** Style the 404 page to match the brand and give it a clear "Back to home" call to action; add a visible "Download PDF" / "Print" control to the resume page.
+- **Near-term:** Repair the heading hierarchy, add `aria-controls` to accordion toggles, enlarge footer link targets, and normalize card heights across grids.
+- **Strategic:** Run a dedicated screen-reader pass and a real mobile-device check (neither was fully possible here — see Methodology Note), and consider one lightweight usability session with someone in the recruiter persona.
+
+---
+
+## 2. Issue Catalog
+
+Sorted by RPN, descending. Heuristic Violations and Quality Issues are both listed here, tagged by `Type`. Design Observations (suggestions, not defects) are in Appendix C.
+
+---
+
+### Issue #1: Repair the heading hierarchy and promote card / post titles to headings
+
+**Type:** Heuristic Violation
+
+**Location:** Site-wide; most visible on the Home page.
+
+**Steps to reproduce:**
+1. Open https://www.danielanapoli.com/ in a browser.
+2. Inspect the heading outline (DevTools, an accessibility extension, or a screen reader's heading list).
+3. Observe the outline: `H1 "Hi, I'm Daniela"` → `H2 "How I can help"` → `H2 "From my blog"` → `H4 "Let's Connect"`.
+
+**Observed behavior:** The footer heading is an `H4`, skipping the `H3` level entirely. Separately, the six "How I can help" service-card titles and the blog-post titles are not marked up as headings at all, so they do not appear in the document outline. The result is a sparse, four-item outline for a content-rich page, with a level gap inside it.
+
+**Expected behavior:** A logical, gap-free heading hierarchy — `H1` → `H2` → `H3`, never skipping a level. Card and post titles should be headings (e.g., `H3` under their `H2` section) so that screen-reader and keyboard users can jump between them and build an accurate mental model of the page.
+
+**Violated heuristic(s):**
+- Nielsen #4 — Consistency and standards (heading levels are a web standard; skipping `H3` breaks it).
+- Nielsen #6 — Recognition rather than recall (a complete outline lets users recognize structure instead of holding it in memory).
+- Shneiderman #2 — Seek universal usability.
+
+**Rationale for mapping:** A specific, observable behavior — the outline jumps `H2` → `H4` and omits all card/post titles — directly violates the standards convention for heading markup and degrades the recognition affordance that headings provide to assistive-technology users.
+
+**Expert perspectives:**
+- **Per Axbom (simulated):** *"A heading outline is a wheelchair ramp for the page. When it skips a level, you've built the ramp with a missing step."* — Adds the inclusion lens: this is an exclusion issue, invisible to the people who built and own the site.
+- **Jesse James Garrett (simulated):** *"Headings are the skeleton of the structure plane. If the skeleton has gaps, the body of content can't hold its shape for everyone."* — Frames it as an information-architecture defect, not just a markup nit.
+- **Jakob Nielsen (simulated):** *"Consistency means meeting the convention users' tools already expect — and screen readers expect an unbroken `H1`→`H2`→`H3` chain."* — Ties it to the consistency heuristic directly.
+
+**Severity — FMEA (Soares):**
+- S: 4 — For assistive-technology users, headings are a primary navigation and skim mechanism; a broken outline materially impairs that. Recoverable (content is still reachable linearly) but a real loss of efficiency.
+- O: 4 — Affects every page, every session, for the assistive-technology subset of users. Bounded population, constant exposure within it.
+- D: 7 — Invisible without a deliberate accessibility audit or screen-reader test. Visual QA and the site owner will never encounter it.
+- **RPN: 112 (High)**
+
+**Severity — Nielsen:** 3 — Major; high priority for the affected population. A sighted reviewer working without a screen reader would naturally under-rate this to 1–2, because they never experience it. That perception gap is itself part of the finding and is captured in the high Detection score.
+
+**Discrepancy flags:** The FMEA RPN (High) is driven substantially by Detection (D=7), not by raw severity. This is the intended signal: the issue is high-priority precisely because it is so hard for the team to notice. Surfaced, not flattened.
+
+**Verification status:** Rendered browser ✓ — heading outline and counts confirmed via live DOM inspection (`document.querySelectorAll('h1..h6')`); single `H1` confirmed.
+
+**Prevalence / context:** Well-documented anti-pattern. Skipped heading levels and non-semantic titles are among the most common findings in automated and manual accessibility audits, and relate to WCAG 2.x Success Criterion 1.3.1 (Info and Relationships) and 2.4.6 (Headings and Labels).
+
+**Recommendation:**
+- **Primary fix:** Mark the six service-card titles and the blog-post titles as `H3` headings within their `H2` sections, and change the footer "Let's Connect" heading from `H4` to the level that keeps the outline gap-free.
+- **Stretch fix:** Run a screen-reader pass (VoiceOver or NVDA) across all templates and confirm the heading list reads as a coherent table of contents on every page type.
+
+---
+
+### Issue #2: Style the 404 page and give it a real recovery path
+
+**Type:** Heuristic Violation
+
+**Location:** Any unmatched route, e.g. https://www.danielanapoli.com/this-page-does-not-exist-xyz
+
+**Steps to reproduce:**
+1. Navigate to any URL on the domain that does not exist.
+2. Observe the rendered page.
+
+**Observed behavior:** The 404 route renders the unstyled framework default: a near-empty page with a black background, the text "404" beside "This page could not be found.", and no footer. The black background appears because the default error page honors the operating system's dark-mode preference, while the rest of the site is always light — so a visitor in dark mode gets a jarring black page sandwiched between light ones. The body offers no explicit "return home" call to action (only the persistent top navigation bar), and the browser tab title still reads "Daniela Napoli | UX & User Researcher Ontario" rather than signaling an error.
+
+**Expected behavior:** An error page that matches the site's visual design, states plainly what happened, and offers an obvious, friendly path back — a prominent link to the home page and ideally to the main sections. The page title should indicate the error state.
+
+**Violated heuristic(s):**
+- Nielsen #9 — Help users recognize, diagnose, and recover from errors (no clear recovery action in the content area).
+- Nielsen #4 — Consistency and standards (visual style and dark-mode behavior diverge sharply from the rest of the site).
+- Nielsen #1 — Visibility of system status (the tab title does not reflect the error).
+- Shneiderman #3 — Offer informative feedback.
+
+**Rationale for mapping:** The specific observable behaviors — an off-brand black page, no in-content recovery CTA, and a non-error tab title — each map cleanly to a named heuristic about error recovery, consistency, and status visibility.
+
+**Expert perspectives:**
+- **Jakob Nielsen (simulated):** *"A good error page does three things: says what went wrong, reassures, and offers the way out. This one does the first, barely, and stops."* — Anchors the gap in heuristic #9.
+- **Steve Krug (simulated):** *"The user's question at a dead end is one word: 'now what?' The page has to answer it before they have to think."* — Adds the radical-clarity lens: the recovery action must be unmissable.
+- **Jeff Sauro (simulated):** *"An unstyled error page is a measurable trust event. On a portfolio whose product *is* design judgment, the cost lands harder than the raw traffic numbers suggest."* — Adds the measurement lens: low frequency, but disproportionate reputational weight.
+
+**Severity — FMEA (Soares):**
+- S: 5 — The site remains recoverable because the top navigation persists, so this is not task failure. But an unstyled, broken-looking error page on a UX researcher's own portfolio is a credibility cost with the exact audience the site is built for.
+- O: 4 — Encountered via mistyped URLs, stale shared links, outdated bookmarks, and search-index drift. Intermittent but realistic for an iterated site.
+- D: 5 — Reproducible the instant anyone tests a bad route, but happy-path QA never visits one, so it is a genuine team-side blind spot.
+- **RPN: 100 (High)**
+
+**Severity — Nielsen:** 3 — Major; high priority. The page is functional enough to escape via the nav, which keeps it below catastrophe, but the consistency and recovery failures warrant prompt attention.
+
+**Discrepancy flags:** FMEA and Nielsen agree (both elevated). No inter-expert disagreement; the panel differs only in emphasis (Nielsen on recovery, Krug on clarity, Sauro on reputational cost).
+
+**Verification status:** Rendered browser ✓ — 404 page rendered and screenshotted directly; dark-mode cause confirmed (`prefers-color-scheme: dark` is active in the test browser, and the site's own pages do not implement dark mode, so the contrast is specific to the framework default).
+
+**Prevalence / context:** Well-documented anti-pattern. Leaving the framework's default 404 in place is a common oversight; usability guidance has long held that error pages should be branded, plain-spoken, and offer a clear route back (Nielsen's heuristic #9; broader NN/g guidance on error-page design — expert judgment on the specific article).
+
+**Recommendation:**
+- **Primary fix:** Build a custom 404 page using the site's normal layout (header, footer, light background) with a short, human message and a prominent "Back to home" button.
+- **Stretch fix:** Add links to the main sections (User Research, Academic, Resume, Contact) and set an error-appropriate page title so the browser tab and history reflect the state.
+
+---
+
+### Issue #3: Add a download / save option to the resume page
+
+**Type:** Heuristic Violation
+
+**Location:** https://www.danielanapoli.com/resume
+
+**Steps to reproduce:**
+1. Open the Resume page.
+2. Look for a way to download, save, or print a copy of the resume.
+3. Observe that no such control is present anywhere on the page.
+
+**Observed behavior:** The resume exists only as an HTML page. There is no "Download PDF," "Save," or "Print" affordance. A print stylesheet *does* exist in the site's CSS, so the browser's own print/save-to-PDF command would produce a reasonable result — but nothing on the page tells the user that, so the capability is effectively hidden.
+
+**Expected behavior:** A visible control on the resume page — a "Download PDF" or "Print resume" button — that lets a recruiter or client save or forward a copy in one click, without having to know about and reach for the browser's print menu.
+
+**Violated heuristic(s):**
+- Nielsen #7 — Flexibility and efficiency of use (no accelerator for a common, high-value task).
+- Nielsen #6 — Recognition rather than recall (the print stylesheet's existence relies on the user *recalling* that browser print exists, rather than *recognizing* an on-page control).
+- Shneiderman #2 — Seek universal usability.
+
+**Rationale for mapping:** The observable behavior — a top-destination page with no save/download/print control despite a print stylesheet being present — maps to flexibility/efficiency (the missing accelerator) and to recognition-over-recall (a capability that exists but is not surfaced).
+
+**Expert perspectives:**
+- **Jared Spool (simulated):** *"Recruiters don't just read a resume — they file it, forward it, and bring it to a hiring panel. If the page doesn't let them take it with them, the design has stopped one step short of the actual job."* — Adds the decision-driven lens: design for what the user does next, not just what they see now.
+- **Sarah Doody (simulated):** *"This is a research-to-design translation gap. We know the recruiter's workflow includes 'save for later' — the page just hasn't been designed around that known step."* — Frames it as a product-flow omission.
+- **Jakob Nielsen (simulated):** *"A print stylesheet you can't discover is an accelerator with no pedal. Make the shortcut visible."* — Ties it to heuristic #7.
+
+**Severity — FMEA (Soares):**
+- S: 5 — Recruiters and clients routinely save or forward resumes; the absence forces a workaround (hunt for the browser print menu, or copy-paste). Recoverable, but real friction for a primary user on a top page.
+- O: 4 — A meaningful share of recruiter and client visits include the intent to keep or share the resume.
+- D: 5 — A design-judgment gap rather than a functional bug; standard QA confirms the page renders and will not flag the missing affordance.
+- **RPN: 100 (High)**
+
+**Severity — Nielsen:** 3 — Major; high priority. It does not block the page from being read, but it obstructs a core task for the audience the page is most for.
+
+**Discrepancy flags:** FMEA and Nielsen agree. Worth noting the print stylesheet slightly lowers Severity from what it would otherwise be — the capability exists; only its discoverability is broken.
+
+**Verification status:** Rendered browser ✓ — page walked; no download/print control found via accessibility-tree search. Print stylesheet existence confirmed via CSS media-query inspection (`@media print` rule present).
+
+**Prevalence / context:** Common. Portfolio and resume pages frequently omit an explicit download control; the expectation that a resume be saveable/printable is well established among recruiting audiences (expert judgment; no specific benchmark cited).
+
+**Recommendation:**
+- **Primary fix:** Add a clearly labeled "Download PDF" or "Print resume" button near the top of the resume page.
+- **Stretch fix:** If serving a real PDF, keep it version-matched to the page; alternatively, wire the button to `window.print()` and polish the existing print stylesheet so the printed output is clean and well-paginated.
+
+---
+
+### Issue #4: Add `aria-controls` to the accordion toggles on detail pages
+
+**Type:** Quality Issue
+
+**Location:** User Research detail pages, e.g. https://www.danielanapoli.com/user-research/discovery (the "What I deliver" / "How I work" / "Example deliverables" accordion).
+
+**Steps to reproduce:**
+1. Open a User Research detail page.
+2. Inspect the accordion section-header buttons.
+3. Observe that each has `aria-expanded` but no `aria-controls` attribute pointing to the collapsible region it governs.
+
+**Observed behavior:** The accordion functions correctly — clicking a header, or "Expand all" / "Collapse all," toggles the sections, and `aria-expanded` updates accurately (verified `true`↔`false`). However, the toggle buttons do not expose `aria-controls`, so the programmatic relationship between each button and the panel it opens is not declared.
+
+**Why it matters:** With `aria-expanded` present but `aria-controls` absent, the disclosure pattern is implemented part-way. Assistive technology announces that a control is expanded or collapsed, but cannot tell the user *which* region it governs or move them straight to it. The W3C ARIA Authoring Practices accordion/disclosure pattern calls for both attributes together. This is a polish gap, not a breakage — hence Quality Issue rather than a full heuristic violation — but it is a standards shortfall that compounds the heading-structure gap in Issue #1.
+
+**Expert perspectives:**
+- **Don Norman (simulated):** *"`aria-expanded` is the signifier that something opened. `aria-controls` is the signifier of *what* opened. Give the user both halves of the conceptual model."* — Adds the affordances/signifiers lens.
+- **Per Axbom (simulated):** *"A half-built ARIA pattern is the kind of thing that passes a casual check and still leaves someone stranded. Finish the pattern."* — Adds the inclusion lens.
+- **Elizabeth Churchill (simulated):** *"On a page with three nested, expandable regions, the relationship metadata is what keeps the interaction model legible. Without it, complexity leaks through to the user."* — Adds the HCI / system-complexity lens.
+
+**Severity — FMEA (Soares):**
+- S: 3 — State *is* announced via `aria-expanded`, so the impact is limited to the missing region relationship; minor.
+- O: 3 — Affects assistive-technology users on detail pages — a bounded population on a subset of pages.
+- D: 7 — Invisible without an accessibility audit or ARIA-pattern review.
+- **RPN: 63 (Medium)**
+
+**Severity — Nielsen:** 1 — Cosmetic; fix if time permits, from a general-usability standpoint.
+
+**Discrepancy flags:** Nielsen (cosmetic) versus FMEA (Medium) diverge. The driver is Detection (D=7): the issue is trivial in user-facing severity but genuinely hard for the team to catch, which lifts the RPN. Surfaced deliberately.
+
+**Verification status:** Rendered browser ✓ — accordion exercised live; `aria-expanded` toggling confirmed; absence of `aria-controls` confirmed via DOM attribute inspection.
+
+**Prevalence / context:** Common. Partial ARIA disclosure patterns (state without relationship) are a frequent finding; the W3C WAI-ARIA Authoring Practices Guide is the real reference for the complete pattern.
+
+**Recommendation:**
+- **Primary fix:** Add `aria-controls` to each accordion toggle, referencing the `id` of the collapsible region it opens.
+- **Stretch fix:** Validate the full accordion against the WAI-ARIA APG accordion pattern, including keyboard interaction expectations.
+
+---
+
+### Issue #5: Rework the footer "Let's Connect" link cluster
+
+**Type:** Heuristic Violation
+
+**Location:** Site-wide footer ("Let's Connect": Email | LinkedIn | Google Scholar | Substack | GitHub).
+
+**Steps to reproduce:**
+1. Scroll to the footer on any page.
+2. Inspect the five connect links and their separators.
+3. Measure the link hit areas and check their accessible names.
+
+**Observed behavior:** Three problems converge in one component. First, the five links are separated by four literal pipe characters (`|`) that are real text content, creating visual clutter and adding noise that some screen readers will voice. Second, the links are roughly 19 px tall (measured), below the 24×24 CSS-px target-size guideline — fiddly to hit, especially on touch. Third, every link except Email opens in a new tab (`target="_blank"`) but none carries an accessible name or visible cue saying so — whereas external links elsewhere on the site (Google Scholar and LinkedIn on the Academic and Contact pages) *do* announce "Opens in a new tab." The footer is inconsistent with the site's own convention.
+
+**Expected behavior:** A connect cluster with comfortable, separated tap targets (≥24 px, ideally larger), separators that are presentational rather than text, and consistent signposting of new-tab behavior matching the rest of the site.
+
+**Violated heuristic(s):**
+- Nielsen #4 — Consistency and standards (new-tab behavior is announced elsewhere but not here).
+- Nielsen #8 — Aesthetic and minimalist design (literal pipe characters as separators add avoidable noise).
+- Shneiderman #2 — Seek universal usability (sub-minimum touch targets disadvantage touch and motor-impaired users).
+
+**Rationale for mapping:** Observable behaviors map to each heuristic: the footer's silent new-tab links contradict the site's own announced-new-tab pattern (consistency); literal `|` text is non-minimal chrome (aesthetic/minimalist); ~19 px targets fall short of universal-usability target-size guidance.
+
+**Expert perspectives:**
+- **Per Axbom (simulated):** *"Nineteen-pixel targets in a row of pipes is a precision test. Not everyone has steady hands or a mouse — and they shouldn't have to."* — Adds the inclusion lens on target size.
+- **Steve Krug (simulated):** *"Pipes are 1990s typography doing a job that whitespace and a little padding do better. Let the links breathe."* — Adds the clarity/declutter lens.
+- **Don Norman (simulated):** *"If a link will whisk me to a new tab, the interface owes me that signifier — and owes it the same way every time."* — Adds the signifier/consistency lens.
+
+**Severity — FMEA (Soares):**
+- S: 3 — Usable, but fiddly; mis-taps and minor friction, concentrated on touch and motor-impaired users.
+- O: 5 — The footer appears on every page, so it is seen constantly; anyone who uses it meets the issue.
+- D: 4 — The clutter is visible in any review; the target-size shortfall needs measurement or a responsive/touch review to catch, and the new-tab inconsistency needs a cross-page comparison.
+- **RPN: 60 (Medium)**
+
+**Severity — Nielsen:** 2 — Minor; low priority, but a straightforward fix with broad reach.
+
+**Discrepancy flags:** FMEA and Nielsen broadly agree (Medium / minor). Note one nuance worth honest disclosure: WCAG 2.5.8 (Target Size, Minimum) includes an exception for links inline within a line of text, which *may* apply to this pipe-separated row; the practical hit-area friction remains regardless of whether the formal exception is invoked.
+
+**Verification status:** Rendered browser ✓ — link dimensions measured via `getBoundingClientRect` (~19 px tall); four literal `|` characters confirmed in the footer text; `target="_blank"` and absence of `aria-label` confirmed via DOM inspection; `rel="noopener noreferrer"` confirmed present (a security positive).
+
+**Prevalence / context:** Common. Small footer touch targets and pipe-delimited link rows are widespread; the 24×24 CSS-px figure references WCAG 2.2 Success Criterion 2.5.8 (Target Size, Minimum), a real standard.
+
+**Recommendation:**
+- **Primary fix:** Replace the literal pipe characters with CSS spacing, give each link adequate padding to reach a comfortable target size, and add a consistent new-tab cue (icon plus accessible name) matching the site's existing pattern.
+- **Stretch fix:** Consider rendering the connect links as a labeled list of buttons or icon links so the grouping is also exposed semantically.
+
+---
+
+### Issue #6: Normalize card heights within grid rows
+
+**Type:** Quality Issue
+
+**Location:** User Research index (https://www.danielanapoli.com/user-research) and Academic index (https://www.danielanapoli.com/academic).
+
+**Steps to reproduce:**
+1. Open the User Research or Academic page.
+2. Look across any row of cards.
+3. Observe that cards in the same row end at different vertical positions and their "Read more" links do not align.
+
+**Observed behavior:** Cards in a row size to their own content, so a card with a longer description or a two-line title (for example "Remote Healthcare Technology Design Toolkit," or "Large-scale Surveys" next to "Persona Integration") is visibly shorter or taller than its neighbors. The "Read more" links consequently sit at different heights across a row.
+
+**Why it matters:** A row of cards reads as a set of peers offering the same kind of choice. When the cards are visibly unequal, the eye has to re-anchor for each one, scanning slows slightly, and the grid looks less finished — a small but real polish cost on pages whose entire job is to showcase the owner's design judgment. It does not block any task, which is why it is a Quality Issue rather than a heuristic violation, though it brushes against Nielsen #4 (consistency).
+
+**Expert perspectives:**
+- **Jesse James Garrett (simulated):** *"On the surface plane, a card grid makes a promise of equivalence. Ragged heights quietly break that promise."* — Adds the structure/surface-plane lens.
+- **Jared Spool (simulated):** *"Every misaligned 'Read more' is a tiny moment where the user's eye has to stop and re-find the target. Multiply by every visitor."* — Adds the decision-driven lens on micro-friction.
+
+**Severity — FMEA (Soares):**
+- S: 2 — Cosmetic; slight scannability friction, no task impact.
+- O: 5 — Visible on every visit to these two index pages.
+- D: 2 — Obvious in any visual QA or design review.
+- **RPN: 20 (Low)**
+
+**Severity — Nielsen:** 1 — Cosmetic; fix if time permits.
+
+**Discrepancy flags:** None. FMEA (Low) and Nielsen (cosmetic) agree.
+
+**Verification status:** Rendered browser ✓ — uneven card heights and misaligned "Read more" links observed directly in screenshots at desktop width.
+
+**Prevalence / context:** Common. Uneven card heights are a routine CSS-layout finding, easily resolved with equal-height grid or flexbox techniques (expert judgment; no benchmark cited).
+
+**Recommendation:**
+- **Primary fix:** Make cards in a row equal height (CSS grid or flexbox stretch), and pin the "Read more" link to the bottom of each card so the row of links aligns.
+- **Stretch fix:** Set a consistent minimum card height or cap description length so titles and body text occupy predictable space.
+
+---
+
+### Issue #7: Shorten the accessible name of blog-post links
+
+**Type:** Quality Issue
+
+**Location:** Home page, "From my blog" section.
+
+**Steps to reproduce:**
+1. Open the Home page.
+2. Inspect the blog-post cards in the "From my blog" column.
+3. Observe that each entire card is a single link.
+
+**Observed behavior:** Each blog card is one link whose accessible name concatenates the post title, the excerpt, the author name, and the date — for example, the full string "AI Heuristic Evaluation: Building a UX Claude skill … I built a Claude skill for conducting usability heuristic evaluations … DANIELA NAPOLI MAY 18" is read as one link name.
+
+**Why it matters:** A screen-reader user navigating by links, or pulling up a links list, hears a long, run-together block instead of a crisp, scannable title. It does not break the link — it still works — so this is a Quality Issue, but it weakens the "links list" navigation affordance and relates to WCAG 2.4.4 (Link Purpose).
+
+**Expert perspectives:**
+- **Steve Krug (simulated):** *"A link name should be a label, not a paragraph. If I can't tell where it goes in a breath, it's too long."* — Adds the radical-clarity lens.
+- **Per Axbom (simulated):** *"Sighted users skim the card; screen-reader users get the whole card poured into one link name. Same component, very different experience."* — Adds the inclusion lens.
+- **Steve Portigal (simulated):** *"Watch how people actually consume a blog list — they triage by title. The link name should match that real behavior."* — Adds the research-grounded behavioral lens.
+
+**Severity — FMEA (Soares):**
+- S: 2 — Minor; the link works, but it is verbose and harder to triage by ear.
+- O: 3 — Affects assistive-technology users on the Home page.
+- D: 5 — Detectable with a screen reader or a links-list check; not caught by visual QA.
+- **RPN: 30 (Low)**
+
+**Severity — Nielsen:** 1 — Cosmetic; fix if time permits.
+
+**Discrepancy flags:** None of note. FMEA (Low) and Nielsen (cosmetic) agree.
+
+**Verification status:** Rendered browser ✓ — concatenated link text confirmed via live DOM inspection of the blog-card anchors.
+
+**Prevalence / context:** Common. "Whole card is one link" is a widespread pattern; the accessible-name bloat it creates is a routine accessibility finding, relating to WCAG Success Criterion 2.4.4 (Link Purpose, In Context).
+
+**Recommendation:**
+- **Primary fix:** Make the post *title* the link, and keep the excerpt, author, and date as adjacent non-link text within the card.
+- **Stretch fix:** If the whole card should remain clickable, give the anchor an explicit `aria-label` of just the post title, or use a title link with the card click handled as an enhancement.
+
+---
+
+## 3. Patterns & Themes
+
+**Systemic vs. surface.** Most of what surfaced is surface-level polish that is quick to fix (card heights, footer clutter, link text, the 404 template). One pattern is closer to systemic: **accessibility is implemented inconsistently.** The site clearly had accessibility in mind — a working skip link, a correct `lang` attribute, visible focus outlines, descriptive image alt text, `prefers-reduced-motion` support, and `rel="noopener"` on external links are all present and are genuinely above average for a personal site. But three separate findings (heading structure, accordion `aria-controls`, footer targets) plus one more (blog link text) show the same shape: the pattern was started and not finished. The fix is not more effort so much as one focused completion pass — ideally with a screen reader in hand.
+
+**The happy path outshines the edges.** The main pages are polished and the copy is confident and clear. The 404 page is the sharp exception — the framework default, never touched. Edges and error states deserve the same finish as the core flows, especially on a portfolio that is itself an argument for the owner's design judgment.
+
+**Friction clusters at the moment of action.** The site is strong at *presenting* — clean IA, good scent, clear service descriptions. The two findings that touch the recruiter/client journey (no resume download; the contact page's opening framing — see Appendix C) both sit at the point where a primary user wants to *act*. Smoothing those two moments would have impact out of proportion to the effort.
+
+**What is working well (worth keeping).** Clear, jargon-light writing; a logical and shallow navigation; consistent breadcrumbs and a Back control on detail pages; a current "Last updated May 2026" footer stamp; sensible external-link security (`rel="noopener noreferrer"`); and the accessibility fundamentals listed above. The issues in this report are refinements to a fundamentally sound site.
+
+---
+
+## 4. Methodology Note
+
+**Frameworks.** Issues were evaluated against Nielsen's 10 Usability Heuristics and Shneiderman's Eight Golden Rules. Each candidate issue was assigned to one of three buckets — Heuristic Violation, Quality Issue, or Design Observation — and only Heuristic Violations are mapped to specific heuristics.
+
+**Severity systems.** Every cataloged issue is scored on two systems. FMEA (Soares' UX adaptation) scores Severity, Occurrence, and Detection 1–10 each; RPN = S × O × D. Detection reflects *team-side* difficulty of catching the issue, not user-side perception. Nielsen severity (0–4) is scored in parallel. Where the two diverge, the discrepancy is reported rather than smoothed — most often it indicates an issue that is low in user-facing severity but hard for the team to detect (high D).
+
+**Calibration applied to RPN bands.** The requester confirmed this is a portfolio / personal site, so the default (transactional) RPN bands were shifted downward per the methodology: **Critical ≥120; High 70–119; Medium 35–69; Low <35.** This calibration was set before any scoring.
+
+**Simulated expert panel disclaimer.** Issues were reasoned through the lenses of named UX experts (Norman, Nielsen, Krug, Garrett, Doody, Spool, Sauro, Portigal, Churchill, Axbom). **All expert quotations in this report are simulated** — they are illustrative framings written in the spirit of each expert's well-documented body of work, not real statements. They are labeled "(simulated)" at every occurrence.
+
+**Fetch method.** All pages were rendered and exercised in a real browser (Claude in Chrome), not a static HTTP fetch. Interactive behavior (the accordion, keyboard focus, "Collapse all") was verified live; DOM attributes, link dimensions, and CSS media queries were inspected via in-page JavaScript. This is a first pass, not a follow-up, so the freshness-fingerprint protocol does not apply; the on-page "Last updated May 2026" stamp is consistent with current content.
+
+**Limitations of automated evaluation.** This evaluation is **not** a substitute for real user testing or a live expert review. It cannot observe real users, measure task times, or capture the emotional texture of a session. Two specific coverage gaps:
+- **Mobile rendering was not directly verified.** The automation browser held its rendering viewport at 1200 px even when the OS window was resized to phone dimensions. The site's markup contains a viewport meta tag, Bootstrap responsive breakpoints, and a `navbar-toggler` (hamburger) element that is correctly hidden at desktop width — strong evidence that a responsive layout is implemented — but the actual phone-width rendering and the mobile navigation menu were not visually confirmed. A real mobile-device check is recommended.
+- **Screen-reader behavior was inferred from the accessibility tree and DOM, not heard.** Findings #1, #4, #7 and Issue #4 (accordion) would each be sharpened by an actual VoiceOver/NVDA pass.
+
+**Inputs.** Blocking inputs were confirmed with the requester before evaluation began: artifact (the URL), primary users (recruiters/hiring managers, prospective clients, peers/collaborators), and top tasks (review work/portfolio; make contact). Non-blocking inputs: product category confirmed (portfolio/personal site); output format confirmed (Markdown). Not supplied, and therefore inferred from the artifact: business stage (treated as a mature, actively maintained site, given the "Last updated May 2026" stamp) and prior research (none provided — no analytics, support tickets, or interviews informed this pass). No input gap materially weakened any specific finding's severity.
+
+**Scope evaluated vs. not evaluated.** Evaluated: Home, User Research index, the Requirements Discovery detail page (as a representative sample of the detail-page template), Academic index, Resume, Contact, and the 404 route. **Not evaluated:** the six remaining User Research detail pages and the three Academic detail pages (publications, talks, toolkit) — only the Discovery detail page was walked, and findings about the detail-page template are assumed to generalize; the external Substack blog; true mobile/responsive rendering; and live assistive-technology output.
+
+---
+
+## 5. Appendices
+
+### Appendix A — Heuristic reference
+
+**Nielsen's 10 Usability Heuristics:** (1) Visibility of system status; (2) Match between system and the real world; (3) User control and freedom; (4) Consistency and standards; (5) Error prevention; (6) Recognition rather than recall; (7) Flexibility and efficiency of use; (8) Aesthetic and minimalist design; (9) Help users recognize, diagnose, and recover from errors; (10) Help and documentation.
+
+**Shneiderman's Eight Golden Rules:** (1) Strive for consistency; (2) Seek universal usability; (3) Offer informative feedback; (4) Design dialogs to yield closure; (5) Prevent errors; (6) Permit easy reversal of actions; (7) Keep users in control; (8) Reduce short-term memory load.
+
+### Appendix B — Severity scoring rubric with calibration used
+
+**FMEA (Soares' UX adaptation):** S (Severity), O (Occurrence), D (team-side Detection difficulty), each 1–10. RPN = S × O × D, range 1–1000.
+
+**RPN bands — calibrated for a portfolio / personal site** (default transactional bands shifted down ~80 points): **Critical ≥120; High 70–119; Medium 35–69; Low <35.**
+
+**Nielsen severity:** 0 = not a problem; 1 = cosmetic; 2 = minor; 3 = major; 4 = catastrophe.
+
+| Issue | Type | S | O | D | RPN | Band | Nielsen |
+|---|---|---|---|---|---|---|---|
+| #1 Heading hierarchy | Heuristic Violation | 4 | 4 | 7 | 112 | High | 3 |
+| #2 Unstyled 404 page | Heuristic Violation | 5 | 4 | 5 | 100 | High | 3 |
+| #3 No resume download | Heuristic Violation | 5 | 4 | 5 | 100 | High | 3 |
+| #4 Accordion `aria-controls` | Quality Issue | 3 | 3 | 7 | 63 | Medium | 1 |
+| #5 Footer link cluster | Heuristic Violation | 3 | 5 | 4 | 60 | Medium | 2 |
+| #6 Uneven card heights | Quality Issue | 2 | 5 | 2 | 20 | Low | 1 |
+| #7 Verbose blog link text | Quality Issue | 2 | 3 | 5 | 30 | Low | 1 |
+
+### Appendix C — Design Observations
+
+These are suggestions, not defects. They are offered for consideration and were not scored.
+
+- **Contact page opens with a discouraging clause.** The Contact page's first sentence begins "I am not currently looking for new opportunities, but I am always open to connecting…". This is honest and is clearly an intentional choice — and honesty about availability is a virtue. The observation is purely about *ordering*: for the confirmed primary users (recruiters, clients) whose task is to make contact, leading with the openness ("I'm always open to connecting with people in the UX and research community — the fastest way to reach me is…") and placing the availability caveat second would keep the same honesty while not opening on a negative. A small reorder, entirely the owner's call.
+- **Homepage whitespace imbalance.** On the Home page, the "How I can help" card grid (left ~two-thirds) ends well above the "From my blog" column (right ~one-third), leaving a tall empty gap on the lower-left at desktop width. Consider balancing the two columns — e.g., a different grid ratio, moving a section, or letting the blog list and cards interleave more evenly.
+- **"Back" control on detail pages uses browser history.** The "← Back" control on detail pages is a `<button>` that appears to rely on browser history. A visitor arriving via a direct link or search result who presses it will leave the site. The breadcrumb trail mitigates this (it provides true in-site navigation), so impact is minor — but a history-independent link to the parent section would be more robust.
+- **Self-referential homepage copy.** The homepage intro says "My website gives more details about the types of research I do…" while the reader is already on the website. Minor; "This site" or simply rephrasing would read slightly more naturally.
+- **External-link new-tab cues vary.** Some external links announce "Opens in a new tab" in their accessible name (Google Scholar, LinkedIn on the Academic/Contact pages); the footer's external links do not. This is folded into Issue #5's consistency point but is worth a site-wide convention check.
+
+### Appendix D — Issues considered and excluded
+
+- **Missing dark-mode support for the main site.** The test browser was in OS dark mode; the site's own pages render light regardless. This is a deliberate, common design choice for a portfolio and was not filed as a defect. It is noted only because it explains why the framework-default 404 page (which *does* honor dark mode) appears black — see Issue #2.
+- **No contact form on the Contact page.** The Contact page offers email and LinkedIn but no form. For a portfolio site this is a legitimate, even preferable, choice (email is lower-friction and spam-resistant) and was not filed.
+- **`mailto:` links.** Email links open the user's mail application. This is standard and expected; not an issue.
+- **Responsive layout.** Not filed as an issue — responsive CSS, a viewport meta tag, and a hamburger toggle are all present in the markup. It is listed instead as a coverage *limitation* (Methodology Note), because the phone-width rendering could not be visually confirmed.
+- **Keyboard focus visibility.** Verified working (skip link receives focus first; visible focus outlines on the logo and nav links). Noted here as a positive, not an issue.
+
+### Appendix E — Panel balance tally
+
+20 expert citations across 7 cataloged issues.
+
+| Cluster | Members cited | Citation count | % of total | Threshold met? |
+|---|---|---|---|---|
+| Foundations | Nielsen (3), Norman (2) | 5 | 25% | Yes (≤40%) |
+| Clarity | Krug (3) | 3 | 15% | Yes |
+| Structure | Garrett (2), Doody (1) | 3 | 15% | Yes |
+| Behavior & research | Spool (2), Portigal (1), Churchill (1) | 4 | 20% | Yes |
+| Measurement | Sauro (1) | 1 | 5% | Yes (≥1) |
+| Ethics & inclusion | Axbom (4) | 4 | 20% | Yes |
+
+Per-panelist maximum: Krug and Axbom at 4/20 = 20% each — well under the ~50% ceiling. Every cluster is cited at least once; no cluster exceeds ~40%. Thresholds met; no rebalancing required.
+
+### Appendix F — Defensibility audit (Phase 9)
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Citations real or marked "expert judgment only" | Pass — Nielsen, Shneiderman, WCAG SCs (1.3.1, 2.4.4, 2.4.6, 2.5.8), and the W3C WAI-ARIA APG are real; where no specific article could be pinned, "expert judgment" is stated. |
+| 2 | Simulated quotes labeled | Pass — every quote marked "(simulated)"; disclaimer in Methodology Note. |
+| 3 | Reproducibility | Pass — every issue has concrete, third-party-runnable steps. |
+| 4 | Score justifications | Pass — every S/O/D dimension and Nielsen rating has stated reasoning; cross-checked against calibration anchors. |
+| 5 | Rendered-behavior verification | Pass — all issues verified in a rendered browser; no Heuristic Violation rests on unverified rendered behavior. |
+| 6 | Freshness verification | N/A — first pass, not a follow-up; no byte-identical refetch relied upon. |
+| 7 | Discrepancies surfaced | Pass — FMEA-vs-Nielsen gaps on Issues #1 and #4 explained; the WCAG 2.5.8 inline exception is disclosed honestly on Issue #5. |
+| 8 | Panel balance | Pass — Appendix E tally complete; thresholds met. |
+| 9 | Scope honesty | Pass — pages and features not evaluated are listed in the Methodology Note and Appendix D. |
+| 10 | Calibration disclosed | Pass — portfolio-site RPN band calibration stated in the Methodology Note and Appendix B. |
+| 11 | Fallback inputs disclosed | Pass — inferred inputs (business stage, prior research) flagged in the Methodology Note. |
+| 12 | Fetch method disclosed | Pass — rendered browser (Claude in Chrome) stated; mobile and screen-reader coverage limits flagged. |
+
+*End of report.*
